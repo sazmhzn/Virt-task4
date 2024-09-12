@@ -1,13 +1,14 @@
 "use client";
 
-import {
-  authenticateUser,
-  getUserFromCookie,
-  setUserCookie,
-} from "@/app/actions";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { getUserFromCookie, setUserCookie } from "@/app/actions";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+
+const usersList = [
+  { username: "admin", password: "admin123" },
+  { username: "user1", password: "password1" },
+  { username: "user2", password: "password2" },
+];
 
 const SignIn = () => {
   const router = useRouter();
@@ -16,8 +17,8 @@ const SignIn = () => {
     username: "",
     password: "",
   });
-
   const [errorMessage, setErrorMessage] = useState();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -30,28 +31,39 @@ const SignIn = () => {
     e.preventDefault();
 
     const { username, password } = formData;
-    console.log(username, password);
 
     if (authenticateUser(username, password)) {
-      // Set the user session cookie and redirect to dashboard
-      setUserCookie(username);
+      await setUserCookie(username);
       router.push("/dashboard");
     } else {
-      console.log("Error");
       setErrorMessage("Invalid username or password");
     }
   };
 
-  // useEffect(() => {
-  //   const checkSession = async () => {
-  //     const userCookie = await getUserFromCookie();
+  function authenticateUser(username, password) {
+    if (username === "" || password === "") return false;
 
-  //     if (userCookie) {
-  //       window.location.href = "/dashboard";
-  //     }
-  //   };
-  //   checkSession();
-  // }, []);
+    const user = usersList.find(
+      (item) => item.username === username && item.password === password
+    );
+
+    console.log("User found:", user);
+
+    return user ? true : false;
+  }
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const userCookie = await getUserFromCookie();
+
+      if (userCookie) {
+        router.push("/dashboard");
+      } else {
+        router.push("/sign-in");
+      }
+    };
+    checkSession();
+  }, []);
 
   return (
     <div className="bg-slate-100 min-h-screen text-neutral-800 grid place-content-center">
