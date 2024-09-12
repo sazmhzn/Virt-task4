@@ -47,8 +47,6 @@ const SignIn = () => {
       (item) => item.username === username && item.password === password
     );
 
-    console.log("User found:", user);
-
     return user ? true : false;
   }
 

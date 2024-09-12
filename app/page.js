@@ -8,6 +8,11 @@ export default function Home() {
         <header>
           <h2>Welcome to next js auth using Cookies</h2>
         </header>
+        <div>some users are:</div>
+        <ul>
+          <li>admin: admin123</li>
+          <li>user1: password1</li>
+        </ul>
         <Link href={"/sign-in"} className="bg-blue-700 py-2 px-4 rounded-md">
           Sign up
         </Link>

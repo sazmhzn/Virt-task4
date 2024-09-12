@@ -10,9 +10,6 @@ export async function setUserCookie(userData) {
   cookies().set({
     name: "user",
     value: JSON.stringify({ username }),
-    httpOnly: true,
-    path: "/",
-    sameSite: "strict",
     maxAge: 60,
   });
 
@@ -22,9 +19,12 @@ export async function setUserCookie(userData) {
 export async function getUserFromCookie() {
   const cookieStore = cookies();
   const userCookie = cookieStore.get("user");
-
   if (userCookie) {
-    return JSON.parse(userCookie.value); // Parse the cookie value to retrieve the user
+    try {
+      return JSON.parse(userCookie.value); // Parse the cookie value to retrieve the user
+    } catch (error) {
+      console.error("Failed to parse user cookie", error);
+    }
   }
 
   return null;

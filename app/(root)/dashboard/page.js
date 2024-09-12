@@ -1,26 +1,31 @@
 "use client";
 
-import { getUserFromCookie } from "@/app/actions";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import { getUserFromCookie } from "@/app/actions"; // Adjust import based on your file structure
 
 const Dashboard = () => {
   const router = useRouter();
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const checkSession = async () => {
       const userCookie = await getUserFromCookie();
 
       if (userCookie) {
-        router.push("/dashboard");
+        setUser(userCookie); // Set user info in state
       } else {
         router.push("/sign-in");
       }
     };
     checkSession();
-  }, []);
+  }, [router]);
 
-  return <div>Dashboard</div>;
+  return (
+    <div className="grid place-content-center min-h-screen">
+      <header>{user ? "Dashboard" : "Loading..."}</header>
+    </div>
+  );
 };
 
 export default Dashboard;
